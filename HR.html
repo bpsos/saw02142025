@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAW Training 02-14-2025</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.5;
+            color: #374151;
+        }
+
+        .container {
+            padding: 1.5rem;
+            background-color: #F9FAFB;
+            min-height: 100vh;
+        }
+
+        .header {
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.875rem;
+            font-weight: bold;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #6B7280;
+        }
+
+        .grid {
+            display: grid;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .chart-container {
+            height: 320px;
+            width: 100%;
+            position: relative;
+        }
+
+        .insight-box {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            background-color: #EFF6FF;
+        }
+
+        .insight-box h4 {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-box p {
+            font-size: 0.875rem;
+            color: #4B5563;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .summary-grid {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .summary-box {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            background-color: #EFF6FF;
+        }
+
+        .summary-box h4 {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-box p {
+            font-size: 0.875rem;
+            color: #4B5563;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>SAW Training 02-14-2025</h1>
+            <p>Analysis of participant feedback and demographics</p>
+        </div>
+        
+        <div class="grid">
+            <!-- Gender Distribution -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Participant Gender Distribution</h2>
+                </div>
+                <div class="card-content">
+                    <div class="chart-container">
+                        <canvas id="genderChart"></canvas>
+                    </div>
+                    <div class="insight-box">
+                        <h4>Key Insight:</h4>
+                        <p>Female participants make up the majority (73%) of attendees, suggesting strong engagement from women in the community.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Age Distribution -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Age Group Distribution</h2>
+                </div>
+                <div class="card-content">
+                    <div class="chart-container">
+                        <canvas id="ageChart"></canvas>
+                    </div>
+                    <div class="insight-box" style="background-color: #FFFBEB;">
+                        <h4>Key Insight:</h4>
+                        <p>The 60-69 age group represents the largest segment (45%), indicating strong participation from senior community members.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Response Scores -->
+            <div class="card full-width">
+                <div class="card-header">
+                    <h2 class="card-title">Average Response Scores</h2>
+                </div>
+                <div class="card-content">
+                    <div class="chart-container">
+                        <canvas id="responseChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Executive Summary -->
+            <div class="card full-width">
+                <div class="card-header">
+                    <h2 class="card-title">Executive Summary</h2>
+                </div>
+                <div class="card-content">
+                    <div class="summary-grid">
+                        <div class="summary-box">
+                            <h4>Overall Satisfaction</h4>
+                            <p>Average satisfaction score of 4.55 out of 5, indicating highly effective training delivery.</p>
+                        </div>
+                        <div class="summary-box" style="background-color: #FFFBEB;">
+                            <h4>Strongest Areas</h4>
+                            <p>Understanding of anti-Asian harassment impact (4.67), Presentation clarity (4.67) and Would reccomend (4.67) received highest scores.</p>
+                        </div>
+                        <div class="summary-box" style="background-color: #ECFDF5;">
+                            <h4>Demographics</h4>
+                            <p>Primarily female participants (73%) with strong representation in 60-69 age group (36%).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Gender Distribution Chart
+        new Chart(document.getElementById('genderChart'), {
+            type: 'pie',
+            data: {
+                labels: ['Female', 'Male'],
+                datasets: [{
+                    data: [8, 3],
+                    backgroundColor: ['#EF4444','#60A5FA']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Age Distribution Chart
+        new Chart(document.getElementById('ageChart'), {
+            type: 'bar',
+            data: {
+                labels: [ '50-59', '60-69', '70-79'],
+                datasets: [{
+                    data: [2, 5, 4],
+                    backgroundColor: ['#EF4444','#60A5FA','#FBBF24']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Number of Participants'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Age Groups'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // Response Scores Chart
+        new Chart(document.getElementById('responseChart'), {
+            type: 'bar',
+            data: {
+                labels: [
+                    'Understanding of active bystander',
+                    'Understanding of anti-Asian harassment impact',
+                    'Understanding of RESPECT strategies',
+                    'Practice opportunities',
+                    'Presentation clarity',
+                    'Trainer knowledge',
+                    'Trainer engagement',
+                    'Would recommend'
+                ],
+                datasets: [{
+                    data: [4.5, 4.67, 4.58, 4.42, 4.67, 4.58, 4.33, 4.67],
+                    backgroundColor: ['#EF4444','#60A5FA','#FBBF24','#EF4444','#60A5FA','#FBBF24','#EF4444','#60A5FA']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 5,
+                        title: {
+                            display: true,
+                            text: 'Average Score'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            maxRotation: 25,
+                            minRotation: 25
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
